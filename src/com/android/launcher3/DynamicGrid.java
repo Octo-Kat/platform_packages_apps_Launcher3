@@ -33,6 +33,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
+import android.preference.PreferenceManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -538,8 +539,15 @@ public class DynamicGrid {
         ArrayList<DeviceProfile> deviceProfiles =
                 new ArrayList<DeviceProfile>();
         boolean hasAA = !AppsCustomizePagedView.DISABLE_ALL_APPS;
-        boolean useLargeIcons = SettingsProvider.getBoolean(context, SettingsProvider.SETTINGS_UI_GENERAL_LARGE_ICONS,
-                R.bool.preferences_interface_general_large_icons_default);
+        boolean useLargeIcons = false;
+
+        // Check if big icons are enabled
+        SharedPreferences mainPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        if (mainPrefs.getBoolean("ui_general_large_icons", false) == true) {
+            useLargeIcons = true;
+        }
+
         // Our phone profiles include the bar sizes in each orientation
         deviceProfiles.add(new DeviceProfile("Super Short Stubby",
                 255, 300,  2, 3,  (useLargeIcons ? 54 : 48), 13, (hasAA ? 5 : 4), (useLargeIcons ? 54 : 48)));

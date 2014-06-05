@@ -294,4 +294,7 @@ s -->
     <string name="wallpaper_button_text">Wallpapers</string>
     <!-- Text for settings button -->
     <string name="settings_button_text">Settings</string>
+
+    <string name="preferences_interface_general_large_icons_title">Larger icons</string>
+    <string name="preferences_interface_general_large_icons_summary">Use extra large application icons in homescreen and drawer</string>
 </resources>

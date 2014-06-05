@@ -89,4 +89,5 @@
          filter the activities shown in the launcher. Can be empty. -->
     <string name="app_filter_class" translatable="false"></string>
 
+    <bool name="preferences_interface_general_large_icons_default">@bool/config_largeIcons</bool>
 </resources>

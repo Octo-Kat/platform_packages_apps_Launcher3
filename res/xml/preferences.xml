@@ -53,6 +53,11 @@
             android:key="pref_key_iconpack"
             android:title="@string/pref_icon_pack_title" />
 
+       <CheckBoxPreference android:key="ui_general_large_icons"
+                android:title="@string/preferences_interface_general_large_icons_title"
+                android:summary="@string/preferences_interface_general_large_icons_summary"
+                android:defaultValue="@bool/preferences_interface_general_large_icons_default" />
+
     </PreferenceCategory>
 
     <PreferenceCategory

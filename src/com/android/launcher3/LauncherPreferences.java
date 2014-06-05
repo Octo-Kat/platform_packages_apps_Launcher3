@@ -4,6 +4,7 @@ import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.preference.CheckBoxPreference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.util.Log;
@@ -16,6 +17,7 @@ public final class LauncherPreferences {
         public static final String KEY_ICON_PACK = "pref_key_iconpack";
         public static final String KEY_ENABLE_HOTWORD = "pref_key_enableHotword";
         public static final String KEY_CUSTOM_HOTWORDS = "pref_key_customHotwords";
+        public static final String KEY_UI_GENERAL_LARGE_ICONS = "ui_general_large_icons";
 
         private static final String TAG = "LauncherPreferences";
 
@@ -25,6 +27,7 @@ public final class LauncherPreferences {
         public static class PrefsFragment  extends PreferenceFragment {
             private Preference mIconpack;
             private Preference mCustomHotwords;
+            private CheckBoxPreference mLargeIcons;
             private LauncherPreferencesActivity mContext;
 
             public PrefsFragment() {
@@ -72,6 +75,7 @@ public final class LauncherPreferences {
                 if (mContext == null) {
                     mContext = (LauncherPreferencesActivity) getActivity();
                 }
+
             }
             @Override
             public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
@@ -86,6 +90,10 @@ public final class LauncherPreferences {
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .setBreadCrumbTitle(R.string.pref_hotwords_title)
                         .commit();
+                } else if (preference == mLargeIcons) {
+                        SharedPreferences.Editor e = getPreferences(KEY_UI_GENERAL_LARGE_ICONS).edit(); 
+                        e.putBoolean (mLargeIcons.isChecked() ? true : false);
+                        e.apply();
                 }
                 return false;
             }
@@ -101,5 +109,6 @@ public final class LauncherPreferences {
                                 || key.equals(KEY_ICON_PACK)
                                 || key.equals(KEY_ENABLE_HOTWORD)
                                 || key.equals(KEY_CUSTOM_HOTWORDS);
+                                || key.equals(KEY_UI_GENERAL_LARGE_ICONS);
         }
 }
