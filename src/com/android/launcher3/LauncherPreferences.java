@@ -108,7 +108,7 @@ public final class LauncherPreferences {
                                 || key.equals(KEY_SHOW_SEARCHBAR)
                                 || key.equals(KEY_ICON_PACK)
                                 || key.equals(KEY_ENABLE_HOTWORD)
-                                || key.equals(KEY_CUSTOM_HOTWORDS);
+                                || key.equals(KEY_CUSTOM_HOTWORDS)
                                 || key.equals(KEY_UI_GENERAL_LARGE_ICONS);
         }
 }
