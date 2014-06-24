@@ -19,6 +19,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import static com.android.launcher3.WidgetPreviewLoader.CacheDb.DB_NAME;
+
+import java.io.File;
+import java.util.ArrayList;
+
 public class ThemeChangedReceiver extends BroadcastReceiver {
     private static final String EXTRA_COMPONENTS = "components";
 
@@ -27,16 +32,14 @@ public class ThemeChangedReceiver extends BroadcastReceiver {
     public static final String MODIFIES_OVERLAYS = "mods_overlays";
 
     public void onReceive(Context context, Intent intent) {
-        // components is a '|' delimited string of the components that changed
-        // due to a theme change.
-        String components = intent.getStringExtra(EXTRA_COMPONENTS);
-        if (components != null) {
-            LauncherAppState.setApplicationContext(context.getApplicationContext());
+        // components is a string array of the components that changed
+        ArrayList<String> components = intent.getStringArrayListExtra(EXTRA_COMPONENTS);
+        if (isInterestingThemeChange(components)) {
             LauncherAppState app = LauncherAppState.getInstance();
-            if (isInterestingThemeChange(components)) {
-                app.getIconCache().flush();
-                app.getModel().forceReload();
-            }
+            clearWidgetPreviewCache(context);
+            app.recreateWidgetPreviewDb();
+            app.getIconCache().flush();
+            app.getModel().forceReload();
         }
     }
 
@@ -44,6 +47,26 @@ public class ThemeChangedReceiver extends BroadcastReceiver {
      * We consider this an "interesting" theme change if it modifies icons, overlays, or fonts.
      * @param components
      * @return
+     */
+    private boolean isInterestingThemeChange(ArrayList<String> components) {
+        if (components != null) {
+            for (String component : components) {
+                if (component.equals(MODIFIES_ICONS) ||
+                        component.equals(MODIFIES_FONTS) ||
+                        component.equals(MODIFIES_OVERLAYS)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * Normally we could use context.deleteDatabase() but this db is in cache/ so we'll
+     * manually delete it and the journal ourselves.
+     *
+     * @param context
      */
     private boolean isInterestingThemeChange(String components) {
         return components.contains(MODIFIES_ICONS) || components.contains(MODIFIES_FONTS) ||
