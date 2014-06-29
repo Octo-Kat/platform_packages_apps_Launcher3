@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import android.appwidget.AppWidgetHostView;
+import android.content.ContentResolver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -34,6 +35,7 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -541,10 +543,8 @@ public class DynamicGrid {
         boolean hasAA = !AppsCustomizePagedView.DISABLE_ALL_APPS;
         boolean useLargeIcons = false;
 
-        // Check if big icons are enabled
-        SharedPreferences mainPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-
-        if (mainPrefs.getBoolean("ui_general_large_icons", false) == true) {
+        if ( Settings.System.getBoolean(context.getContentResolver(),
+                                Settings.System.LAUNCHER_LARGE_ICONS, false) == true ) {
             useLargeIcons = true;
         }
 

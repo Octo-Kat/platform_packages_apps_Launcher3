@@ -56,7 +56,7 @@
        <CheckBoxPreference android:key="ui_general_large_icons"
                 android:title="@string/preferences_interface_general_large_icons_title"
                 android:summary="@string/preferences_interface_general_large_icons_summary"
-                android:defaultValue="@bool/preferences_interface_general_large_icons_default" />
+                android:defaultValue="false" />
 
     </PreferenceCategory>
 

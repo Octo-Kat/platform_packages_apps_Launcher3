@@ -1,12 +1,15 @@
 package com.android.launcher3;
 
+import android.content.ContentResolver;
 import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.CheckBoxPreference;
+import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
+import android.provider.Settings;
 import android.util.Log;
 
 public final class LauncherPreferences {
@@ -24,7 +27,7 @@ public final class LauncherPreferences {
         /**
          * Main Preferences fragment
          */
-        public static class PrefsFragment  extends PreferenceFragment {
+        public static class PrefsFragment  extends PreferenceFragment implements OnPreferenceChangeListener {
             private Preference mIconpack;
             private Preference mCustomHotwords;
             private CheckBoxPreference mLargeIcons;
@@ -72,6 +75,10 @@ public final class LauncherPreferences {
                 mIconpack = findPreference(KEY_ICON_PACK);
                 mCustomHotwords = findPreference(KEY_CUSTOM_HOTWORDS);
 
+                mLargeIcons = (CheckBoxPreference) findPreference(KEY_UI_GENERAL_LARGE_ICONS);
+                mLargeIcons.setChecked(mLargeIcons.isChecked() ? true : false);             
+                mLargeIcons.setOnPreferenceChangeListener(this);
+
                 if (mContext == null) {
                     mContext = (LauncherPreferencesActivity) getActivity();
                 }
@@ -90,12 +97,22 @@ public final class LauncherPreferences {
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .setBreadCrumbTitle(R.string.pref_hotwords_title)
                         .commit();
-                } else if (preference == mLargeIcons) {
-                        SharedPreferences.Editor e = getPreferences(KEY_UI_GENERAL_LARGE_ICONS).edit(); 
-                        e.putBoolean (mLargeIcons.isChecked() ? true : false);
-                        e.apply();
                 }
                 return false;
+            }
+
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                
+                ContentResolver cr = mContext.getContentResolver();
+
+                if (preference == mLargeIcons) {
+                       mLargeIcons.setChecked(mLargeIcons.isChecked() ? true : false);
+                       Settings.System.putBoolean(cr,
+                                Settings.System.LAUNCHER_LARGE_ICONS, mLargeIcons.isChecked() ? true : false);
+                }
+
+                return true;
             }
         }
 
