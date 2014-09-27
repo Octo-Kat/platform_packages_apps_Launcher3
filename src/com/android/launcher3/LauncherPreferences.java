@@ -1,12 +1,13 @@
 package com.android.launcher3;
 
-import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.preference.Preference;
-import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.os.Bundle;
+import android.preference.PreferenceFragment;
 import android.util.Log;
+import android.app.Activity;
 
 public final class LauncherPreferences {
         public static final String KEY_WORKSPACE_ROWS = "pref_key_workspaceRows";
@@ -14,22 +15,12 @@ public final class LauncherPreferences {
         public static final String KEY_WORKSPACE_DEFAULT_PAGE = "pref_key_workspaceDefaultPage";
         public static final String KEY_SHOW_SEARCHBAR = "pref_key_showSearchBar";
         public static final String KEY_ICON_PACK = "pref_key_iconpack";
-        public static final String KEY_ENABLE_HOTWORD = "pref_key_enableHotword";
-        public static final String KEY_CUSTOM_HOTWORDS = "pref_key_customHotwords";
 
         private static final String TAG = "LauncherPreferences";
 
-        /**
-         * Main Preferences fragment
-         */
         public static class PrefsFragment  extends PreferenceFragment {
             private Preference mIconpack;
-            private Preference mCustomHotwords;
             private LauncherPreferencesActivity mContext;
-
-            public PrefsFragment() {
-
-            }
 
             public PrefsFragment(LauncherPreferencesActivity context) {
                 mContext = context;
@@ -40,7 +31,7 @@ public final class LauncherPreferences {
                 super.onCreate(savedInstanceState);
 
                 // Load the preferences from an XML resource
-                addPreferencesFromResource(R.xml.preferences);
+                addPreferencesFromResource(R.xml.preferences );
 
                 SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
 
@@ -66,12 +57,7 @@ public final class LauncherPreferences {
                 else {
                         Log.w(TAG, "No DynamicGrid to get default values!");
                 }
-                mIconpack = findPreference(KEY_ICON_PACK);
-                mCustomHotwords = findPreference(KEY_CUSTOM_HOTWORDS);
-
-                if (mContext == null) {
-                    mContext = (LauncherPreferencesActivity) getActivity();
-                }
+                mIconpack = (Preference) findPreference(KEY_ICON_PACK);
             }
             @Override
             public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
@@ -79,13 +65,6 @@ public final class LauncherPreferences {
                 if (preference == mIconpack){
                     IconPackHelper.pickIconPack(mContext, false);
                     return true;
-                } else if (preference == mCustomHotwords) {
-                    getFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, new HotwordCustomFragment())
-                        .addToBackStack(null)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .setBreadCrumbTitle(R.string.pref_hotwords_title)
-                        .commit();
                 }
                 return false;
             }
@@ -98,8 +77,6 @@ public final class LauncherPreferences {
                                 || key.equals(KEY_WORKSPACE_COLS)
                                 || key.equals(KEY_WORKSPACE_DEFAULT_PAGE)
                                 || key.equals(KEY_SHOW_SEARCHBAR)
-                                || key.equals(KEY_ICON_PACK)
-                                || key.equals(KEY_ENABLE_HOTWORD)
-                                || key.equals(KEY_CUSTOM_HOTWORDS);
+                                || key.equals(KEY_ICON_PACK);
         }
 }
